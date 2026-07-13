@@ -1,0 +1,6 @@
+booth_plan.json
+*.svg
+__pycache__/
+*.pyc
+.venv/
+venv/
