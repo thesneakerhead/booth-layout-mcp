@@ -4,7 +4,7 @@ and these place the geometry, keep it in bounds, and check for overlaps.
 """
 
 
-def grid(plan, rows, cols, bw, bh, aisle=6.0, aisle_every=2, gap=0.0,
+def grid(plan, rows, cols, booth_w, booth_h, aisle=6.0, aisle_every=2, gap=0.0,
          margin=4.0, start_x=None, start_y=None, prefix="B"):
     """Lay out rows×cols booths, inserting a wider cross-aisle after every
     `aisle_every` rows. Returns the list of created booths (bounds permitting)."""
@@ -14,27 +14,27 @@ def grid(plan, rows, cols, bw, bh, aisle=6.0, aisle_every=2, gap=0.0,
     for r in range(rows):
         x = x0
         for c in range(cols):
-            b = plan.add(x, y, bw, bh, label=f"{prefix}{n}")
+            b = plan.add(x, y, booth_w, booth_h, label=f"{prefix}{n}")
             if not plan.in_bounds(b):
                 plan.remove(b.id)
             else:
                 created.append(b); n += 1
-            x += bw + gap
-        y += bh + (aisle if (r + 1) % aisle_every == 0 else gap)
+            x += booth_w + gap
+        y += booth_h + (aisle if (r + 1) % aisle_every == 0 else gap)
     return created
 
 
-def along_wall(plan, side, count, bw, bh, gap=0.0, margin=2.0, prefix="W"):
+def along_wall(plan, side, count, booth_w, booth_h, gap=0.0, margin=2.0, prefix="W"):
     """Place `count` booths flush along one wall: 'top' | 'bottom' | 'left' | 'right'."""
     created, n = [], plan._next_id
     for i in range(count):
         if side in ("top", "bottom"):
-            x = margin + i * (bw + gap)
-            y = margin if side == "top" else plan.height - bh - margin
+            x = margin + i * (booth_w + gap)
+            y = margin if side == "top" else plan.height - booth_h - margin
         else:
-            y = margin + i * (bh + gap)
-            x = margin if side == "left" else plan.width - bw - margin
-        b = plan.add(x, y, bw, bh, label=f"{prefix}{n}")
+            y = margin + i * (booth_h + gap)
+            x = margin if side == "left" else plan.width - booth_w - margin
+        b = plan.add(x, y, booth_w, booth_h, label=f"{prefix}{n}")
         if not plan.in_bounds(b):
             plan.remove(b.id)
         else:
